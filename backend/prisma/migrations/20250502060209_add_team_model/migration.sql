@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "Issue" ADD COLUMN     "teamId" INTEGER;
+
+-- AlterTable
+ALTER TABLE "Team" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AddForeignKey
+ALTER TABLE "Issue" ADD CONSTRAINT "Issue_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE SET NULL ON UPDATE CASCADE;
