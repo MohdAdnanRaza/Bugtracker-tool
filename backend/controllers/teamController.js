@@ -11,23 +11,6 @@ const createTeam = async (req, res) => {
   }
 };
 
-// const getAllTeamMembers = async (req, res) => {
-
-//   try {
-//     const members = await prisma.team.findMany({
-//       select: {
-//         id: true,
-//         name: true,
-//         email: true,
-//         teamId: true,
-//       },
-//     });
-//     res.json(members);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
-
 const getAllTeamMembers = async (req, res) => {
   try {
     const members = await prisma.team.findMany({
@@ -37,7 +20,7 @@ const getAllTeamMembers = async (req, res) => {
         users: {
           select: {
             id: true,
-            name: true,
+            username: true,
             email: true,
           },
         },

@@ -15,65 +15,9 @@ import {
 } from "lucide-react";
 import axios from "axios";
 
-// Mock axios since we don't have actual axios in this environment
-// const mockAxios = {
-//   get: () =>
-//     Promise.resolve({
-//       data: [
-//         {
-//           id: 1,
-//           title: "Login page is broken",
-//           description: "Users cannot log in using SSO",
-//           status: "In Progress",
-//           priority: "high",
-//           assignedToId: 2,
-//           createdById: 1,
-//           type: "bug",
-//         },
-//         {
-//           id: 2,
-//           title: "Dashboard charts not loading",
-//           description: "Charts show loading spinner indefinitely",
-//           status: "Open",
-//           priority: "medium",
-//           assignedToId: 3,
-//           createdById: 1,
-//           type: "bug",
-//         },
-//         {
-//           id: 3,
-//           title: "Typo on about page",
-//           description: "Company name is misspelled",
-//           status: "Open",
-//           priority: "low",
-//           assignedToId: 1,
-//           createdById: 2,
-//           type: "task",
-//         },
-//         {
-//           id: 4,
-//           title: "Mobile menu doesn't close",
-//           description: "Menu stays open after selection on mobile",
-//           status: "Resolved",
-//           priority: "medium",
-//           assignedToId: 2,
-//           createdById: 3,
-//           type: "bug",
-//         },
-//       ],
-//     }),
-//   post: () => Promise.resolve({ data: { success: true } }),
-// };
-
-const users = [
-  { id: 1, name: "Adnan", avatar: "A" },
-  { id: 2, name: "Sameer", avatar: "S" },
-  { id: 3, name: "Faiz", avatar: "F" },
-  { id: 4, name: "Fahad", avatar: "F" },
-];
-
 export default function CreateIssue() {
   const [issues, setIssues] = useState([]);
+  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [filterStatus, setFilterStatus] = useState("all");
@@ -98,7 +42,25 @@ export default function CreateIssue() {
       setIsLoading(false);
     }
   };
+  // Fetch users
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/users");
+        setUsers(
+          res.data.map((user) => ({
+            id: user.id,
+            name: user.username,
+            avatar: user.username[0].toUpperCase(), // or however you want to generate it
+          }))
+        );
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
 
+    fetchUsers();
+  }, []);
   useEffect(() => {
     fetchIssues();
   }, []);

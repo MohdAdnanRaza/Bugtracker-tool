@@ -1,4 +1,4 @@
-// src/contexts/AuthContext.jsx
+// // src/contexts/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 
@@ -49,7 +49,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post("/api/auth/login", credentials);
+      const response = await axios.post(
+        "http://localhost:4000/login",
+        credentials
+      );
       const { token, user: userData } = response.data;
 
       // Save token and set user

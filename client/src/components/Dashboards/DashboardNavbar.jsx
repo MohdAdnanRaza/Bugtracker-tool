@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Search, Bell, Settings, HelpCircle, Plus } from "lucide-react";
-
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 export default function DashBoardNavbar() {
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Mock user data
-  const user = {
-    initials: "MA",
-    avatarBg: "bg-purple-600",
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  console.log("User in DashboardNavbar:", user);
+  const handleClick = () => {
+    navigate("/userprofile");
   };
+  // Mock user data
+  // const user = {
+  //   initials: "MA",
+  //   avatarBg: "bg-purple-600",
+  // };
 
   return (
     <nav className="bg-white border-b border-gray-200 h-14 flex items-center px-4 sticky top-0 z-50">
@@ -73,13 +79,25 @@ export default function DashBoardNavbar() {
         </button>
 
         {/* User Avatar */}
-        <button className="ml-2">
+        {/* <button className="ml-2">
           <div
             className={`${user.avatarBg} text-white rounded-full w-8 h-8 flex items-center justify-center font-medium`}
           >
             {user.initials}
           </div>
-        </button>
+        </button> */}
+
+        {user ? (
+          <button onClick={handleClick} className="ml-2">
+            <div
+              className={`${user.avatarBg} text-white rounded-full w-8 h-8 flex items-center justify-center font-medium`}
+            >
+              {user.initials}
+            </div>
+          </button>
+        ) : (
+          <div className="w-8 h-8 bg-gray-300 rounded-full animate-pulse ml-2"></div>
+        )}
       </div>
     </nav>
   );

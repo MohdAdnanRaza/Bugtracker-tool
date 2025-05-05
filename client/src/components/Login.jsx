@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 // Custom GitHub icon component
 const GitHubIcon = () => (
@@ -21,14 +22,14 @@ const Login = ({ user, setUser }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // const handleGitHubLogin = () => {
-  //   window.location.href = "http://localhost:4000/auth/github";
-  // };
-
   const handleGitHubLogin = () => {
-    window.location.href =
-      "https://github.com/login/oauth/authorize?client_id=Ov23lih6OZncofjQkXwh&redirect_uri=http://localhost:4000/auth/github/callback&scope=user:email";
+    window.location.href = "http://localhost:4000/auth/github";
   };
+
+  // const handleGitHubLogin = () => {
+  //   window.location.href =
+  //     "https://github.com/login/oauth/authorize?client_id=Ov23lih6OZncofjQkXwh&redirect_uri=http://localhost:4000/auth/github/callback&scope=user:email";
+  // };
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();

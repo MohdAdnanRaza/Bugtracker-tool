@@ -206,8 +206,8 @@ const CreateTeam = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: selectedUserId,
-          teamId: selectedTeamId,
+          userId: parseInt(selectedUserId),
+          teamId: parseInt(selectedTeamId),
         }),
       });
 
@@ -408,7 +408,7 @@ const CreateTeam = () => {
         >
           Issues
         </button>
-        <button
+        {/* <button
           className={`py-3 px-6 font-medium ${
             activeTab === "members"
               ? "text-blue-600 border-b-2 border-blue-500"
@@ -417,7 +417,7 @@ const CreateTeam = () => {
           onClick={() => setActiveTab("members")}
         >
           Members
-        </button>
+        </button> */}
       </div>
 
       {/* Loading indicator */}
@@ -713,9 +713,9 @@ const CreateTeam = () => {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Assigned To
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Team
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -764,9 +764,9 @@ const CreateTeam = () => {
                               ? assignedUser.username
                               : "Unassigned"}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {team ? team.name : "No Team"}
-                          </td>
+                          </td> */}
                         </tr>
                       );
                     })}
@@ -779,7 +779,7 @@ const CreateTeam = () => {
       )}
 
       {/* Team Members */}
-      {activeTab === "members" && (
+      {/* {activeTab === "members" && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center">
             <span className="w-5 h-5 mr-2 text-blue-500">
@@ -813,14 +813,12 @@ const CreateTeam = () => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Name
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Email
-                    </th>
+
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Team ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Team Name
+                      User Name
                     </th>
                   </tr>
                 </thead>
@@ -861,7 +859,7 @@ const CreateTeam = () => {
             </div>
           )}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

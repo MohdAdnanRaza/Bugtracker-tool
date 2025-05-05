@@ -1,54 +1,33 @@
-// src/routes/comments.js
-import express from "express";
-import { PrismaClient } from "@prisma/client";
-import { authenticateToken } from "../middleware/auth.js";
-
+const express = require("express");
 const router = express.Router();
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-router.post("/issues/:id/comments", authenticateToken, async (req, res) => {
+// POST a new comment to an issue
+router.post("/issues/:id/comments", async (req, res) => {
   try {
-    const { id } = req.params;
-    const { content, parentId } = req.body;
-    const userId = req.user.id;
+    const issueId = parseInt(req.params.id);
+    const { content, userId, parentId } = req.body;
 
-    // Validate issue exists
+    // Ensure the issue exists
     const issue = await prisma.issue.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: issueId },
     });
 
     if (!issue) {
-      return res.status(404).json({ message: "Issue not found" });
+      return res.status(404).json({ error: "Issue not found" });
     }
 
-    // If this is a reply, validate parent comment
-    if (parentId) {
-      const parentComment = await prisma.comment.findUnique({
-        where: { id: parseInt(parentId) },
-      });
-
-      if (!parentComment) {
-        return res.status(404).json({ message: "Parent comment not found" });
-      }
-
-      // Ensure parent comment belongs to the same issue
-      if (parentComment.issueId !== parseInt(id)) {
-        return res.status(400).json({
-          message: "Parent comment does not belong to this issue",
-        });
-      }
-    }
-
-    // Create comment
+    // Create the comment
     const comment = await prisma.comment.create({
       data: {
         content,
-        authorId: userId,
-        issueId: parseInt(id),
+        issue: { connect: { id: issueId } },
+        user: { connect: { id: parseInt(userId) } },
         parentId: parentId ? parseInt(parentId) : null,
       },
       include: {
-        author: {
+        user: {
           select: {
             id: true,
             username: true,
@@ -60,47 +39,28 @@ router.post("/issues/:id/comments", authenticateToken, async (req, res) => {
     res.status(201).json(comment);
   } catch (error) {
     console.error("Error creating comment:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ error: "Failed to create comment" });
   }
 });
 
-/**
- * GET /api/issues/:id/comments
- * Get all comments for an issue
- */
+// GET all comments for an issue
 router.get("/issues/:id/comments", async (req, res) => {
   try {
-    const { id } = req.params;
+    const issueId = parseInt(req.params.id);
 
-    // Validate issue exists
-    const issue = await prisma.issue.findUnique({
-      where: { id: parseInt(id) },
-    });
+    // if (isNaN(issueId)) {
+    //   return res.status(400).json({ error: "Invalid issue ID" });
+    // }
 
-    if (!issue) {
-      return res.status(404).json({ message: "Issue not found" });
-    }
-
-    // Get all comments for the issue
     const comments = await prisma.comment.findMany({
       where: {
-        issueId: parseInt(id),
+        issueId: issueId, // Simplified to directly provide the value
       },
       include: {
-        author: {
+        user: {
           select: {
             id: true,
             username: true,
-          },
-        },
-        replies: {
-          include: {
-            author: {
-              select: {
-                id: true,
-                username: true,
-              },
-            },
           },
         },
       },
@@ -109,52 +69,73 @@ router.get("/issues/:id/comments", async (req, res) => {
       },
     });
 
-    // Organize comments into threads
-    const threadedComments = comments.filter(
-      (comment) => comment.parentId === null
-    );
-
-    res.json(threadedComments);
+    res.json(comments);
   } catch (error) {
     console.error("Error fetching comments:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ error: "Failed to fetch comments" });
   }
 });
 
-/**
- * DELETE /api/comments/:id
- * Delete a comment
- */
-router.delete("/comments/:id", authenticateToken, async (req, res) => {
+// DELETE a comment
+router.delete("/comments/:id", async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
+    const commentId = parseInt(req.params.id);
 
-    // Find the comment
+    // Check if comment exists
     const comment = await prisma.comment.findUnique({
-      where: { id: parseInt(id) },
-      include: { author: true },
+      where: { id: commentId },
     });
 
     if (!comment) {
-      return res.status(404).json({ message: "Comment not found" });
+      return res.status(404).json({ error: "Comment not found" });
     }
 
-    // Check if user is authorized (comment author)
-    if (comment.authorId !== userId) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    // Delete comment
+    // Delete the comment
     await prisma.comment.delete({
-      where: { id: parseInt(id) },
+      where: { id: commentId },
     });
 
     res.json({ message: "Comment deleted successfully" });
   } catch (error) {
     console.error("Error deleting comment:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({ error: "Failed to delete comment" });
   }
 });
 
-export default router;
+// PATCH/UPDATE a comment
+router.patch("/comments/:id", async (req, res) => {
+  try {
+    const commentId = parseInt(req.params.id);
+    const { content } = req.body;
+
+    // Check if comment exists
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // Update the comment
+    const updatedComment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { content },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    res.status(500).json({ error: "Failed to update comment" });
+  }
+});
+
+module.exports = router;

@@ -13,7 +13,11 @@ router.get("/issues", async (req, res) => {
 
 // POST new issue
 router.post("/issues", async (req, res) => {
-  const { title, description, priority, createdById, assignedToId } = req.body;
+  let { title, description, priority, createdById, assignedToId } = req.body;
+
+  createdById = parseInt(createdById);
+  assignedToId = assignedToId ? parseInt(assignedToId) : null;
+
   const issue = await prisma.issue.create({
     data: {
       title,

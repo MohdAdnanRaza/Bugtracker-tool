@@ -42,6 +42,7 @@ exports.signup = async (req, res) => {
       user: { id: user.id, email: user.email },
     });
   } catch (err) {
+    console.error("Signup error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };
