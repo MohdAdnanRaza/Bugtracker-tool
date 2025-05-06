@@ -14,7 +14,7 @@ const commentsRoutes = require("./routes/commentsRoutes");
 const app = express();
 const port = process.env.PORT || 4000;
 
-const allowedOrigins = ["http:/77.37.45.151", "http://localhost:5173"];
+const allowedOrigins = ["http://77.37.45.151", "http://localhost:5173"];
 
 app.use(
   cors({
@@ -48,6 +48,9 @@ app.use(teamRoutes);
 app.use(userRoutes);
 
 app.use(commentsRoutes);
+app.get("/", (req, res) => {
+  res.send("Backend is running");
+});
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
