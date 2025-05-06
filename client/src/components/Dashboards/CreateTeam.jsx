@@ -1,84 +1,5 @@
-// import React, { useState } from "react";
-// import axios from "axios";
-
-// const CreateTeam = () => {
-//   const [name, setName] = useState("");
-//   const [members, setMembers] = useState([]);
-
-//   const handleCreate = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await axios.post("http://localhost:4000/create", { name });
-//       alert(`Team created: ${res.data.name}`);
-//       setName("");
-//     } catch (err) {
-//       console.error(err);
-//       alert("Failed to create team");
-//     }
-//   };
-
-//   const fetchMembers = async () => {
-//     try {
-//       const res = await axios.get("http://localhost:4000/members");
-//       setMembers(res.data);
-//     } catch (err) {
-//       console.error(err);
-//       alert("Failed to fetch members");
-//     }
-//   };
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       <form onSubmit={handleCreate} style={{ marginBottom: "20px" }}>
-//         <input
-//           type="text"
-//           value={name}
-//           placeholder="Team Name"
-//           onChange={(e) => setName(e.target.value)}
-//           required
-//           style={{ padding: "8px", marginRight: "10px" }}
-//         />
-//         <button type="submit" style={{ padding: "8px" }}>
-//           Create Team
-//         </button>
-//       </form>
-
-//       <div style={{ marginBottom: "20px" }}>
-//         <button onClick={fetchMembers} style={{ padding: "8px" }}>
-//           Get All Team Members
-//         </button>
-//       </div>
-
-//       {members.length > 0 && (
-//         <table border="1" cellPadding="10" cellSpacing="0">
-//           <thead>
-//             <tr>
-//               <th>ID</th>
-//               <th>Name</th>
-//               <th>Email</th>
-//               <th>Team ID</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             {members.map((member) => (
-//               <tr key={member.id}>
-//                 <td>{member.id}</td>
-//                 <td>{member.name}</td>
-//                 <td>{member.email}</td>
-//                 <td>{member.teamId ?? "Unassigned"}</td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CreateTeam;
-
 import React, { useState, useEffect } from "react";
-
+import API_BASE_URL from "../../config";
 const CreateTeam = () => {
   // States for team creation
   const [teamName, setTeamName] = useState("");
@@ -117,7 +38,7 @@ const CreateTeam = () => {
   const fetchTeams = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/members");
+      const res = await fetch(`${API_BASE_URL}/members`);
       const data = await res.json();
       setTeams(data);
       setLoading(false);
@@ -131,7 +52,7 @@ const CreateTeam = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/users");
+      const res = await fetch(`${API_BASE_URL}/users `);
       const data = await res.json();
       setUsers(data);
       setLoading(false);
@@ -145,7 +66,7 @@ const CreateTeam = () => {
   const fetchIssues = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/issues");
+      const res = await fetch(`${API_BASE_URL}/issues`);
       const data = await res.json();
       setIssues(data);
       setLoading(false);
@@ -159,7 +80,7 @@ const CreateTeam = () => {
   const fetchMembers = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/members");
+      const res = await fetch(`${API_BASE_URL}/members`);
       const data = await res.json();
       setMembers(data);
       setLoading(false);
@@ -176,7 +97,7 @@ const CreateTeam = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/create", {
+      const res = await fetch(`${API_BASE_URL}/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: teamName }),
@@ -202,7 +123,7 @@ const CreateTeam = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:4000/assign-user", {
+      const res = await fetch(`${API_BASE_URL}/assign-user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -777,89 +698,6 @@ const CreateTeam = () => {
           </div>
         </div>
       )}
-
-      {/* Team Members */}
-      {/* {activeTab === "members" && (
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4 flex items-center">
-            <span className="w-5 h-5 mr-2 text-blue-500">
-              <UsersIcon />
-            </span>
-            Team Members
-          </h2>
-
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={fetchMembers}
-              className="flex items-center text-sm text-blue-500 hover:text-blue-700"
-            >
-              <span className="w-4 h-4 mr-1">
-                <RefreshIcon />
-              </span>
-              Refresh Members
-            </button>
-          </div>
-
-          {members.length === 0 ? (
-            <p className="text-gray-500 italic">No team members found.</p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Name
-                    </th>
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Team ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User Name
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {members.map((member) => {
-                    const team = teams.find((t) => t.id === member.teamId);
-
-                    return (
-                      <tr key={member.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {member.id}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {member.name}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {member.email}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {member.teamId || "Unassigned"}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {member.teamId ? (
-                            <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                              {team ? team.name : `Team ${member.teamId}`}
-                            </span>
-                          ) : (
-                            <span className="text-gray-400 italic">
-                              Unassigned
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      )} */}
     </div>
   );
 };

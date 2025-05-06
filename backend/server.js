@@ -14,7 +14,7 @@ const commentsRoutes = require("./routes/commentsRoutes");
 const app = express();
 const port = process.env.PORT || 4000;
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ["http:/77.37.45.151", "http://localhost:5173"];
 
 app.use(
   cors({

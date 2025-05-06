@@ -34,7 +34,7 @@ export default function CreateIssue() {
     setIsLoading(true);
     try {
       // Using our mock axios instead of actual axios
-      const res = await axios.get("http://localhost:4000/issues");
+      const res = await axios.get(`${API_BASE_URL}/issues`);
       setIssues(res.data);
     } catch (error) {
       console.error("Failed to fetch issues:", error);
@@ -46,7 +46,7 @@ export default function CreateIssue() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/users");
+        const res = await axios.get(`${API_BASE_URL}/users`);
         setUsers(
           res.data.map((user) => ({
             id: user.id,
@@ -80,7 +80,7 @@ export default function CreateIssue() {
     const createdById = 1; // Replace with actual user ID
     try {
       // In a real app, we would await the response
-      axios.post("http://localhost:4000/issues", {
+      axios.post(`${API_BASE_URL}/issues`, {
         ...form,
         createdById,
         status: "Open",

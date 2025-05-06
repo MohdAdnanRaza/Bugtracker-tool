@@ -8,7 +8,7 @@ const UserProfile = ({ user, setUser }) => {
   // Function to handle logout
   const handleLogout = () => {
     // Clear user data (you might need to call your backend to invalidate session/token)
-    fetch("http://localhost:4000/logout", {
+    fetch(`${API_BASE_URL}/logout`, {
       method: "POST",
       credentials: "include",
     })

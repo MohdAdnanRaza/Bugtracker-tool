@@ -52,7 +52,7 @@ export default function SignupForm() {
 
     try {
       // Using the window.fetch API instead of axios since it's not imported
-      const response = await fetch("http://localhost:4000/signup", {
+      const response = await fetch(`${API_BASE_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

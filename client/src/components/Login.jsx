@@ -23,7 +23,7 @@ const Login = ({ user, setUser }) => {
   const [error, setError] = useState("");
 
   const handleGitHubLogin = () => {
-    window.location.href = "http://localhost:4000/auth/github";
+    window.location.href = `${API_BASE_URL}/auth/github`;
   };
 
   // const handleGitHubLogin = () => {
@@ -38,7 +38,7 @@ const Login = ({ user, setUser }) => {
 
     try {
       // Using fetch instead of axios for compatibility
-      const response = await fetch("http://localhost:4000/login", {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -67,7 +67,7 @@ const Login = ({ user, setUser }) => {
     try {
       // Try JWT logout first, fallback to GitHub logout
       try {
-        const response = await fetch("http://localhost:4000/jwt-logout", {
+        const response = await fetch(`${API_BASE_URL}/jwt-logout`, {
           credentials: "include",
         });
 
@@ -79,7 +79,7 @@ const Login = ({ user, setUser }) => {
         // JWT logout failed, try GitHub logout
       }
 
-      const response = await fetch("http://localhost:4000/logout", {
+      const response = await fetch(`${API_BASE_URL}/logout`, {
         credentials: "include",
       });
 
